@@ -55,6 +55,53 @@ curl https://get.ignite.com/username/blog@latest! | sudo bash
 
 ---
 
+## Create Type of a State
+
+```shell
+# ignite scaffold type [타입명소문자] 필드목록 .....
+ignite scaffold type post title body creator id:uint
+```
+
+## Create messages (change states, tx)
+
+```shell
+## Create create-post Msg Service
+ignite scaffold message create-post title body --response id:uint
+
+```
+
+## Create queries
+
+```shell
+## Create list-post Query Service
+ignite scaffold query list-post --response post:Post --paginated
+```
+
+---
+
+## Create a blog post
+
+```shell
+blogd tx blog create-post hello world --from alice --chain-id blog
+blogd tx blog create-post foo bar --from bob --chain-id blog
+```
+
+## List all blog posts with pagination
+
+```shell
+blogd q blog list-post
+```
+
+---
+
+## Create type script client
+
+```shell
+ignite generate ts-client --clear-cache
+```
+
+---
+
 ## Msg 서비스와 Keeper
 
 Cosmos SDK에서 사용자 정의 모듈을 개발할 때, 비즈니스 로직을 어디에 배치할지 결정하는 것은 매우 중요합니다. Cosmos SDK의 아키텍처는 `Msg` 서비스와 `Keeper` 간에 역할을 명확히 구분하여 설계되어 있습니다. 이 두 컴포넌트는 모듈 내에서 서로 다른 역할을 수행하며, 이해하고 올바르게 사용하면 매우 강력한 애플리케이션을 구축할 수 있습니다.
