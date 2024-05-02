@@ -77,6 +77,8 @@ ignite scaffold message create-post title body --response id:uint
 ignite scaffold query list-post --response post:Post --paginated
 ```
 
+## Implement Keeper and Msg/Query Service
+
 ---
 
 ## Create a blog post
