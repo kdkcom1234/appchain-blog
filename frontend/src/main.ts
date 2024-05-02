@@ -1,9 +1,9 @@
 import { Client } from "../../ts-client"
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 
-const mnemonic =
-  "play butter frown city voyage pupil rabbit wheat thrive mind skate turkey helmet thrive door either differ gate exhibit impose city swallow goat faint";
-const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic);
+// const mnemonic =
+//   "play butter frown city voyage pupil rabbit wheat thrive mind skate turkey helmet thrive door either differ gate exhibit impose city swallow goat faint";
+// const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic);
 
 const client = new Client(
   {
@@ -11,13 +11,18 @@ const client = new Client(
     rpcURL: "http://localhost:26657",
     prefix: "cosmos",
   },
-  wallet
+  // wallet
 );
 
-const account = (await wallet.getAccounts())[0]
+await client.useKeplr()
+const accounts = (await client.signer?.getAccounts())
+const account = accounts ? accounts[0] : undefined
+console.log(client.signer?.getAccounts)
+
+// const account = (await wallet.getAccounts())[0]
 console.log(account);
 
-const balances = await client.CosmosBankV1Beta1.query.queryAllBalances(account.address);
+const balances = await client.CosmosBankV1Beta1.query.queryAllBalances(account!.address);
 console.log(balances.data);
 
 // const tx = await client.BlogBlog.tx.sendMsgCreatePost(
