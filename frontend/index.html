@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,7 +7,14 @@
     <title>Vite + TS</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <div style="display: flex; flex-direction: column; width: 400px">
+        <input id="title" placeholder="title" />
+        <textarea id="body" placeholder="body"></textarea>
+        <button id="connect">connect</button>
+        <button id="post">post</button>
+      </div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

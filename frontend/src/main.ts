@@ -1,5 +1,5 @@
 import { Client } from "../../ts-client"
-import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
+import { AccountData, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 
 // const mnemonic =
 //   "play butter frown city voyage pupil rabbit wheat thrive mind skate turkey helmet thrive door either differ gate exhibit impose city swallow goat faint";
@@ -14,27 +14,43 @@ const client = new Client(
   // wallet
 );
 
-await client.useKeplr()
-const accounts = (await client.signer?.getAccounts())
-const account = accounts ? accounts[0] : undefined
-console.log(client.signer?.getAccounts)
-
 // const account = (await wallet.getAccounts())[0]
-console.log(account);
 
-const balances = await client.CosmosBankV1Beta1.query.queryAllBalances(account!.address);
-console.log(balances.data);
+let account: AccountData | undefined;
 
-// const tx = await client.BlogBlog.tx.sendMsgCreatePost(
-//   {
-//     value:
-//       // creator와 signer pubkey 비교함
-//       { title: "test", body: "test1234", creator: account.address }
-//   }
-// )
-// console.log(tx.msgResponses);
+document.querySelector("#connect")?.addEventListener("click", async () => {
+  await client.useKeplr()
+  const accounts = (await client.signer?.getAccounts())
+  account = accounts ? accounts[0] : undefined
+  console.log(client.signer?.getAccounts)
 
-const list = await client.BlogBlog.query.queryListPost();
-console.log(list.data);
+  console.log(account);
+
+  const balances = await client.CosmosBankV1Beta1.query.queryAllBalances(account!.address);
+  console.log(balances.data);
+})
+
+document.querySelector("#post")?.addEventListener("click", async () => {
+  const tx = await client.BlogBlog.tx.sendMsgCreatePost(
+    {
+      value:
+      {
+        title: (document.querySelector("#title") as HTMLInputElement).value,
+        body: (document.querySelector("#body") as HTMLTextAreaElement).value,
+        // creator와 signer pubkey 비교함
+        creator: account!.address
+      }
+    }
+  )
+  console.log(tx.msgResponses);
+
+  const list = await client.BlogBlog.query.queryListPost();
+  console.log(list.data);
+})
+
+
+
+
+
 
 
