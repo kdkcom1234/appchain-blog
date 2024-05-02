@@ -100,6 +100,12 @@ blogd q blog list-post
 ignite generate ts-client --clear-cache
 ```
 
+## Send tokens
+
+```shell
+blogd tx bank send alice cosmos1hgetjlxqkv5dssgv6z4xzxtqfpfu0gm76klauf 10token --chain-id blog
+```
+
 ---
 
 ## Msg 서비스와 Keeper
