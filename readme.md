@@ -55,14 +55,22 @@ curl https://get.ignite.com/username/blog@latest! | sudo bash
 
 ---
 
-## Create Type of a State
+## Steps of create a custom module
+
+### Create a Module
+
+```shell
+ignite scaffold module
+```
+
+### Create Type of a State
 
 ```shell
 # ignite scaffold type [타입명소문자] 필드목록 .....
 ignite scaffold type post title body creator id:uint
 ```
 
-## Create messages (change states, tx)
+### Create messages (change states, tx)
 
 ```shell
 ## Create create-post Msg Service
@@ -70,25 +78,36 @@ ignite scaffold message create-post title body --response id:uint
 
 ```
 
-## Create queries
+### Create queries
 
 ```shell
 ## Create list-post Query Service
 ignite scaffold query list-post --response post:Post --paginated
 ```
 
-## Implement Keeper and Msg/Query Service
+### Implement Keeper and Msg/Query Service
+
+https://docs.ignite.com/guide/blog/create
+https://docs.ignite.com/guide/blog/list
 
 ---
 
-## Create a blog post
+## Testing
+
+### Send tokens
+
+```shell
+blogd tx bank send alice cosmos1hgetjlxqkv5dssgv6z4xzxtqfpfu0gm76klauf 10token --chain-id blog
+```
+
+### Create a blog post
 
 ```shell
 blogd tx blog create-post hello world --from alice --chain-id blog
 blogd tx blog create-post foo bar --from bob --chain-id blog
 ```
 
-## List all blog posts with pagination
+### List all blog posts with pagination
 
 ```shell
 blogd q blog list-post
@@ -96,16 +115,111 @@ blogd q blog list-post
 
 ---
 
-## Create type script client
+### Create type script client
 
 ```shell
 ignite generate ts-client --clear-cache
 ```
 
-## Send tokens
+### Frontend
 
-```shell
-blogd tx bank send alice cosmos1hgetjlxqkv5dssgv6z4xzxtqfpfu0gm76klauf 10token --chain-id blog
+```ts
+// vite.config.ts
+import { nodeResolve } from "@rollup/plugin-node-resolve";
+import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [nodeResolve()],
+
+  optimizeDeps: {
+    esbuildOptions: {
+      define: {
+        global: "globalThis",
+      },
+      plugins: [
+        NodeGlobalsPolyfillPlugin({
+          buffer: true,
+        }),
+      ],
+    },
+  },
+});
+```
+
+```ts
+// main.ts
+import { Client } from "../../ts-client";
+import { AccountData, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
+
+// const mnemonic =
+//   "play butter frown city voyage pupil rabbit wheat thrive mind skate turkey helmet thrive door either differ gate exhibit impose city swallow goat faint";
+// const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic);
+
+const client = new Client(
+  {
+    apiURL: "http://localhost:1317",
+    rpcURL: "http://localhost:26657",
+    prefix: "cosmos",
+  }
+  // wallet
+);
+
+// const account = (await wallet.getAccounts())[0]
+
+let account: AccountData | undefined;
+
+document.querySelector("#connect")?.addEventListener("click", async () => {
+  await client.useKeplr();
+  const accounts = await client.signer?.getAccounts();
+  account = accounts ? accounts[0] : undefined;
+  console.log(client.signer?.getAccounts);
+
+  console.log(account);
+
+  const balances = await client.CosmosBankV1Beta1.query.queryAllBalances(
+    account!.address
+  );
+  console.log(balances.data);
+});
+
+document.querySelector("#post")?.addEventListener("click", async () => {
+  const tx = await client.BlogBlog.tx.sendMsgCreatePost({
+    value: {
+      title: (document.querySelector("#title") as HTMLInputElement).value,
+      body: (document.querySelector("#body") as HTMLTextAreaElement).value,
+      // creator와 signer pubkey 비교함
+      creator: account!.address,
+    },
+  });
+  console.log(tx.msgResponses);
+
+  const list = await client.BlogBlog.query.queryListPost();
+  console.log(list.data);
+});
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + TS</title>
+  </head>
+  <body>
+    <div id="app">
+      <div style="display: flex; flex-direction: column; width: 400px">
+        <input id="title" placeholder="title" />
+        <textarea id="body" placeholder="body"></textarea>
+        <button id="connect">connect</button>
+        <button id="post">post</button>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
 ```
 
 ---
