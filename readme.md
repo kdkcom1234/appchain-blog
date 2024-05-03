@@ -60,7 +60,7 @@ curl https://get.ignite.com/username/blog@latest! | sudo bash
 ### Create a Module
 
 ```shell
-ignite scaffold module
+ignite scaffold module blog
 ```
 
 ### Create Type of a State
