@@ -97,7 +97,7 @@ https://docs.ignite.com/guide/blog/list
 ### Send tokens
 
 ```shell
-blogd tx bank send alice cosmos1hgetjlxqkv5dssgv6z4xzxtqfpfu0gm76klauf 10token --chain-id blog
+blogd tx bank send alice cosmos1hgetjlxqkv5dssgv6z4xzxtqfpfu0gm76klauf 10stake --chain-id blog
 ```
 
 ### Create a blog post
