@@ -7,8 +7,8 @@ import { AccountData, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 
 const client = new Client(
   {
-    apiURL: `http://${location.host}:1317`,
-    rpcURL: `http://${location.host}:26657`,
+    apiURL: `http://${location.host.split(":")[0]}:1317`,
+    rpcURL: `http://${location.host.split(":")[0]}:26657`,
     prefix: "cosmos",
   },
   // wallet
