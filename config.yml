@@ -5,10 +5,12 @@ accounts:
     coins:
       - 20000token
       - 200000000stake
+    mnemonic: umbrella mushroom luggage metal traffic slight faculty volcano mansion desert unaware sniff label artwork ozone final thunder crowd all suit wool protect ring describe
   - name: bob
     coins:
       - 10000token
       - 100000000stake
+    mnemonic: loud donkey use home resist clinic base feature figure erode birth slogan draw relief joke weasel rough evolve mind feature hat basket march another
   - name: frank
     coins: ["1000token", "100000000stake"]
     mnemonic: play butter frown city voyage pupil rabbit wheat thrive mind skate turkey helmet thrive door either differ gate exhibit impose city swallow goat faint
